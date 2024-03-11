@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+{% block content %}
+  <div class="container mb-5 mt-2">
+    <ul class="nav justify-content-end">
+      <li class="nav-item">
+        <a class="nav-link active" aria-current="page" href="{% url 'account' %}">Account</a>
+      </li>
+      <li class="nav-item">
+        <div class="btn-group">
+          <button class=" btn-link dropdown-toggle nav-link active" style="color: rgb(74, 123, 212);" data-bs-toggle="dropdown" aria-current="page" aria-expanded="false" >
+            Address
+          </button>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="{% url "myaddress" %}">My Address</a></li>
+            <li><a class="dropdown-item" href="{% url "updatedelivery" %}">Update Address</a></li>
+          </ul>
+        </div>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'orderedproducts' %}">Ordered</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{% url "cancelledview" %}">Canceled</a>
+      </li>
+     
+    </ul>
+    <div class="accordion" id="accordionExample">
+      <div class="accordion-item">
+        <h2 class="accordion-header"><button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">Welcome Back {{ request.user }}</button></h2>
+        <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
+            {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-info" role="alert">
+             {{message}}
+            </div>
+            {% endfor %}
+            {% endif %}
+        </div>
+      </div>
+    </div>
+
+    {% block content2 %}
+
+    
+    {% if query %}
+
+    <table class="table table-dark  ">
+      <thead>
+        <tr>
+          <th scope="col">No of items</th>
+          <th scope="col">Product Image</th>
+          <th scope="col">Product Name</th>
+          <th scope="col">Price</th>
+          <th scope="col">
+            <i class="bi bi-trash3-fill"></i>
+          </th>
+          <th scope="col">
+            <i class="bi bi-bag"></i>
+          </th>
+        </tr>
+      </thead>
+    {% endif %}
+      <tbody>
+        {% for val in query %}
+          <tr>
+            <th scope="row">{{ forloop.counter }}</th>
+            <td><img src="{{ val.product.pro_image.url }}" alt="" class="card w-25 h-25 border-danger w3-hover-grayscale"></td>
+            <td>{{ val.item_name }}</td>
+         
+            <td>{{ val.item_price }}</td>
+            <td>
+              <a href="{% url 'remove' val.id %}" onclick="confirm()" ><i class="bi bi-x-circle-fill text-danger"></i></a>
+            </td>
+        
+           {% if val.product.is_available %}
+           <td>
+            <a class="btn btn-warning btn-sm" href="{% url "billing" val.product_id%}">Buy Now</a>
+          </td>
+          {% else %}
+          <td>
+            <button class="w3-button w3-ripple w3-yellow rounded">Comming Soon</button>
+          </td>
+           {% endif %}
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    {% if query %}
+    <div class="d-grid gap-2 col-6 mx-auto">
+      <a class="btn btn-outline-primary font-effect-shadow-multiple" href="{% url "checkoutall" %}" >Checkout <i class="bi bi-bag-heart"></i></a>
+    </div>
+    {% endif %}
+{% endblock content2 %}
+    <!-- Attractive Content Section -->
+    <div class="mt-4">
+      <h3 class="mb-3">Discover Something Exciting!</h3>
+      <div class="card mb-3">
+        <img src="../static/Images/exclusive.jpg" class="card-img-top" alt="Exciting Image">
+        <div class="card-body">
+          <h5 class="card-title">Don't Miss Out</h5>
+          <p class="card-text">Dive into a world of adventure and excitement with our latest offerings. Make each moment count!</p>
+          <a href="#" class="btn btn-primary">Explore Now</a>
+        </div>
+      </div>
+      <p>Don't miss out on the thrill - join us on this journey of discovery!</p>
+    </div>
+  </div>
+
+  <script>
+    function confirmDelete() {
+      alert('Item deleted');
+    }
+  </script>
+{% endblock %}
+
+
